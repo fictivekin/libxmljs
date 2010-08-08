@@ -37,6 +37,37 @@ XmlDocument::Encoding(const v8::Arguments& args) {
 }
 
 v8::Handle<v8::Value>
+XmlDocument::CreateTextNode(const v8::Arguments& args) {
+  v8::HandleScope scope;
+  XmlDocument *document = LibXmlObj::Unwrap<XmlDocument>(args.This());
+  assert(document);
+
+  v8::String::Utf8Value content(args[0]);
+  return scope.Close(document->create_text_node(*content));
+}
+
+v8::Handle<v8::Value>
+XmlDocument::CreateDocumentFragment(const v8::Arguments& args) {
+  v8::HandleScope scope;
+  XmlDocument *document = LibXmlObj::Unwrap<XmlDocument>(args.This());
+  assert(document);
+
+  return scope.Close(document->create_document_fragment());
+}
+
+v8::Handle<v8::Value>
+XmlDocument::ImportNode(const v8::Arguments& args) {
+  v8::HandleScope scope;
+  XmlDocument *document = LibXmlObj::Unwrap<XmlDocument>(args.This());
+  assert(document);
+
+  XmlNode *node = LibXmlObj::Unwrap<XmlNode>(args[0]->ToObject());
+  document->import_node(node->xml_obj);
+  return scope.Close(args.This());
+}
+
+
+v8::Handle<v8::Value>
 XmlDocument::Version(const v8::Arguments& args) {
   v8::HandleScope scope;
   XmlDocument *document = LibXmlObj::Unwrap<XmlDocument>(args.This());
@@ -189,6 +220,25 @@ XmlDocument::get_version() {
 }
 
 v8::Handle<v8::Value>
+XmlDocument::create_text_node(const char *content) {
+  v8::HandleScope scope;
+  return scope.Close(LibXmlObj::GetMaybeBuild<XmlNode, xmlNode>(xmlNewDocText(xml_obj, (const xmlChar *)content)));
+}
+
+v8::Handle<v8::Value>
+XmlDocument::create_document_fragment() {
+  v8::HandleScope scope;
+  return scope.Close(LibXmlObj::GetMaybeBuild<XmlElement, xmlNode>(xmlNewDocFragment(xml_obj)));
+}
+
+
+void
+XmlDocument::import_node(xmlNode *node) {
+  v8::HandleScope scope;
+  xmlDOMWrapAdoptNode(NULL, node->doc, node, xml_obj, NULL, 0);
+}
+
+v8::Handle<v8::Value>
 XmlDocument::to_string() {
   v8::HandleScope scope;
   xmlChar* buffer = NULL;
@@ -254,6 +304,18 @@ XmlDocument::Initialize(v8::Handle<v8::Object> target) {
   LXJS_SET_PROTO_METHOD(constructor_template,
                         "toString",
                         XmlDocument::ToString);
+
+  LXJS_SET_PROTO_METHOD(constructor_template,
+                        "createTextNode",
+                        XmlDocument::CreateTextNode);
+
+  LXJS_SET_PROTO_METHOD(constructor_template,
+                        "importNode",
+                        XmlDocument::ImportNode);
+
+  LXJS_SET_PROTO_METHOD(constructor_template,
+                        "createDocumentFragment",
+                        XmlDocument::CreateDocumentFragment);
 
   target->Set(v8::String::NewSymbol("Document"),
               constructor_template->GetFunction());

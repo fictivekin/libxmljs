@@ -134,6 +134,29 @@ XmlElement::Attrs(const v8::Arguments& args) {
 }
 
 v8::Handle<v8::Value>
+XmlElement::RemoveAttribute(const v8::Arguments& args) {
+  v8::HandleScope scope;
+  XmlElement *element = LibXmlObj::Unwrap<XmlElement>(args.This());
+  assert(element);
+
+  v8::String::Utf8Value name(args[0]);
+  element->remove_attr(*name);
+  return scope.Close(args.This());
+}
+
+v8::Handle<v8::Value>
+XmlElement::SetAttribute(const v8::Arguments& args) {
+  v8::HandleScope scope;
+  XmlElement *element = LibXmlObj::Unwrap<XmlElement>(args.This());
+  assert(element);
+
+  v8::String::Utf8Value name(args[0]);
+  v8::String::Utf8Value value(args[1]);
+  element->set_attr(*name, *value);
+  return scope.Close(args.This());
+}
+
+v8::Handle<v8::Value>
 XmlElement::AddChild(const v8::Arguments& args) {
   v8::HandleScope scope;
   XmlElement *element = LibXmlObj::Unwrap<XmlElement>(args.This());
@@ -149,7 +172,7 @@ XmlElement::AddChild(const v8::Arguments& args) {
   }
 
   element->add_child(child);
-  return scope.Close(args.This());
+  return scope.Close(LibXmlObj::GetMaybeBuild<XmlElement, xmlNode>(child->xml_obj));
 }
 
 v8::Handle<v8::Value>
@@ -301,6 +324,15 @@ XmlElement::get_name() {
 }
 
 // TODO(sprsquish) make these work with namespaces
+void
+XmlElement::remove_attr(const char* name) {
+  xmlAttr* attr = xmlHasProp(xml_obj, (const xmlChar*)name);
+  if (attr) {
+    xmlRemoveProp(attr);
+  }
+}
+
+
 v8::Handle<v8::Value>
 XmlElement::get_attr(const char* name) {
   v8::HandleScope scope;
@@ -552,6 +584,14 @@ XmlElement::Initialize(v8::Handle<v8::Object> target) {
   LXJS_SET_PROTO_METHOD(constructor_template,
                         "addNextSibling",
                         XmlElement::AddNextSibling);
+
+  LXJS_SET_PROTO_METHOD(constructor_template,
+                        "removeAttribute",
+                        XmlElement::RemoveAttribute);
+
+  LXJS_SET_PROTO_METHOD(constructor_template,
+                        "setAttribute",
+                        XmlElement::SetAttribute);
 
   target->Set(v8::String::NewSymbol("Element"),
               constructor_template->GetFunction());

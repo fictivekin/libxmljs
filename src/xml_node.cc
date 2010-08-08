@@ -114,6 +114,15 @@ XmlNode::Type(const v8::Arguments& args) {
 }
 
 v8::Handle<v8::Value>
+XmlNode::NodeType(const v8::Arguments& args) {
+  v8::HandleScope scope;
+  XmlNode *node = LibXmlObj::Unwrap<XmlNode>(args.This());
+  assert(node);
+
+  return scope.Close(node->get_node_type());
+}
+
+v8::Handle<v8::Value>
 XmlNode::ToString(const v8::Arguments& args) {
   v8::HandleScope scope;
   XmlNode *node = LibXmlObj::Unwrap<XmlNode>(args.This());
@@ -247,6 +256,11 @@ XmlNode::remove() {
 }
 
 v8::Handle<v8::Value>
+XmlNode::get_node_type() {
+  return v8::Integer::New(xml_obj->type);
+}
+
+v8::Handle<v8::Value>
 XmlNode::get_type() {
   switch (xml_obj->type) {
   case  XML_ELEMENT_NODE:
@@ -326,6 +340,10 @@ XmlNode::Initialize(v8::Handle<v8::Object> target) {
   LXJS_SET_PROTO_METHOD(constructor_template,
                         "type",
                         XmlNode::Type);
+
+  LXJS_SET_PROTO_METHOD(constructor_template,
+                        "nodeType",
+                        XmlNode::NodeType);
 
   LXJS_SET_PROTO_METHOD(constructor_template,
                         "remove",
