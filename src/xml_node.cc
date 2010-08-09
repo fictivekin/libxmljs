@@ -135,9 +135,11 @@ v8::Handle<v8::Value>
 XmlNode::Clone(const v8::Arguments& args) {
   v8::HandleScope scope;
   XmlNode *node = LibXmlObj::Unwrap<XmlNode>(args.This());
+  bool deep = args[0]->ToBoolean()->Value();
+  
   assert(node);
 
-  return scope.Close(node->clone());
+  return scope.Close(node->clone(deep));
 }
 
 v8::Handle<v8::Value>
@@ -260,17 +262,10 @@ XmlNode::to_string() {
 }
 
 v8::Handle<v8::Value>
-XmlNode::clone() {
+XmlNode::clone(bool deep) {
   v8::HandleScope scope;
-  xmlNode *resNode = NULL;
-  int result;
   
-  result = xmlDOMWrapCloneNode(NULL, NULL, xml_obj, &resNode, xml_obj->doc, xml_obj->parent, 1, 0);
-  if (result == 0) {
-    return scope.Close(LibXmlObj::GetMaybeBuild<XmlNode, xmlNode>(resNode));
-  } else {
-    return v8::Null();
-  }
+  return scope.Close(LibXmlObj::GetMaybeBuild<XmlNode, xmlNode>(xmlCopyNode(xml_obj, deep ? 1 : 0)));
 }
 
 void
