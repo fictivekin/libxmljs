@@ -269,9 +269,9 @@ XmlDocFrag::import_element(XmlElement *element) {
         if(new_child == NULL) {
             return NULL;
         }
-        
-//        element->remove();
 
+        xmlUnlinkNode(element->xml_obj);
+        
         UpdateV8Memory();
 
         v8::Handle<v8::Object> obj =
