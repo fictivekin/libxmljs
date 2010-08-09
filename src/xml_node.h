@@ -28,6 +28,7 @@ class XmlNode : public LibXmlObj {
   static v8::Handle<v8::Value> NodeType(const v8::Arguments& args);
   static v8::Handle<v8::Value> ToString(const v8::Arguments& args);
   static v8::Handle<v8::Value> Remove(const v8::Arguments& args);
+  static v8::Handle<v8::Value> Clone(const v8::Arguments& args);
 
   v8::Handle<v8::Value> get_doc();
   v8::Handle<v8::Value> remove_namespace();
@@ -40,6 +41,7 @@ class XmlNode : public LibXmlObj {
   v8::Handle<v8::Value> get_type();
   v8::Handle<v8::Value> get_node_type();
   v8::Handle<v8::Value> to_string();
+  v8::Handle<v8::Value> clone();
   void remove();
 };
 

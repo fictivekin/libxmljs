@@ -132,6 +132,15 @@ XmlNode::ToString(const v8::Arguments& args) {
 }
 
 v8::Handle<v8::Value>
+XmlNode::Clone(const v8::Arguments& args) {
+  v8::HandleScope scope;
+  XmlNode *node = LibXmlObj::Unwrap<XmlNode>(args.This());
+  assert(node);
+
+  return scope.Close(node->clone());
+}
+
+v8::Handle<v8::Value>
 XmlNode::Remove(const v8::Arguments& args) {
   v8::HandleScope scope;
   XmlNode *node = LibXmlObj::Unwrap<XmlNode>(args.This());
@@ -250,6 +259,20 @@ XmlNode::to_string() {
   }
 }
 
+v8::Handle<v8::Value>
+XmlNode::clone() {
+  v8::HandleScope scope;
+  xmlNode *resNode = NULL;
+  int result;
+  
+  result = xmlDOMWrapCloneNode(NULL, NULL, xml_obj, &resNode, xml_obj->doc, xml_obj->parent, 1, 0);
+  if (result == 0) {
+    return scope.Close(LibXmlObj::GetMaybeBuild<XmlNode, xmlNode>(resNode));
+  } else {
+    return v8::Null();
+  }
+}
+
 void
 XmlNode::remove() {
   xmlUnlinkNode(xml_obj);
@@ -352,6 +375,10 @@ XmlNode::Initialize(v8::Handle<v8::Object> target) {
   LXJS_SET_PROTO_METHOD(constructor_template,
                         "toString",
                         XmlNode::ToString);
+
+  LXJS_SET_PROTO_METHOD(constructor_template,
+                        "cloneNode",
+                        XmlNode::Clone);
 
   XmlElement::Initialize(target);
   XmlAttribute::Initialize(target);
