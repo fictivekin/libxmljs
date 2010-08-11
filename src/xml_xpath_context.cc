@@ -23,12 +23,11 @@ v8::Handle<v8::Array>
 XmlXpathContext::evaluate(const xmlChar* xpath) {
   v8::HandleScope scope;
   xmlXPathObject* result = xmlXPathEval(xpath, ctxt);
-
   if (!result) {
       return scope.Close(v8::Array::New(0));
   }
 
-  if (result->type != XPATH_NODESET) {
+  if (result->type != XPATH_NODESET || !result->nodesetval) {
     xmlXPathFreeObject(result);
 
     return scope.Close(v8::Array::New(0));
