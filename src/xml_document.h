@@ -24,6 +24,7 @@ class XmlDocument : public LibXmlObj {
   static v8::Handle<v8::Value> Encoding(const v8::Arguments& args);
   static v8::Handle<v8::Value> Version(const v8::Arguments& args);
   static v8::Handle<v8::Value> Doc(const v8::Arguments& args);
+  static v8::Handle<v8::Value> NodeType(const v8::Arguments& args);
   static v8::Handle<v8::Value> Errors(const v8::Arguments& args);
   static v8::Handle<v8::Value> ToString(const v8::Arguments& args);
   static v8::Handle<v8::Value> CreateTextNode(const v8::Arguments& args);
@@ -37,6 +38,7 @@ class XmlDocument : public LibXmlObj {
   v8::Handle<v8::Value> get_version();
   v8::Handle<v8::Value> to_string();
   v8::Handle<v8::Value> get_root();
+  v8::Handle<v8::Value> get_node_type();
   v8::Handle<v8::Value> create_document_fragment();
   v8::Handle<v8::Value> create_text_node(const char *content);
   v8::Handle<v8::Value> create_comment(const char *content);

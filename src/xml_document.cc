@@ -77,6 +77,15 @@ XmlDocument::ImportNode(const v8::Arguments& args) {
   return scope.Close(args.This());
 }
 
+v8::Handle<v8::Value>
+XmlDocument::NodeType(const v8::Arguments& args) {
+  v8::HandleScope scope;
+  XmlDocument *doc = LibXmlObj::Unwrap<XmlDocument>(args.This());
+  assert(doc);
+
+  return scope.Close(doc->get_node_type());
+}
+
 
 v8::Handle<v8::Value>
 XmlDocument::Version(const v8::Arguments& args) {
@@ -286,6 +295,11 @@ XmlDocument::get_root() {
   return v8::Null();
 }
 
+v8::Handle<v8::Value>
+XmlDocument::get_node_type() {
+  return v8::Integer::New(xml_obj->type);
+}
+
 void
 XmlDocument::set_root(xmlNode *node) {
   xmlDocSetRootElement(xml_obj, node);
@@ -337,6 +351,11 @@ XmlDocument::Initialize(v8::Handle<v8::Object> target) {
   LXJS_SET_PROTO_METHOD(constructor_template,
                         "createDocumentFragment",
                         XmlDocument::CreateDocumentFragment);
+
+  LXJS_SET_PROTO_METHOD(constructor_template,
+                        "nodeType",
+                        XmlDocument::NodeType);
+
 
   target->Set(v8::String::NewSymbol("Document"),
               constructor_template->GetFunction());
