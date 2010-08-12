@@ -47,6 +47,17 @@ XmlDocument::CreateTextNode(const v8::Arguments& args) {
 }
 
 v8::Handle<v8::Value>
+XmlDocument::CreateComment(const v8::Arguments& args) {
+  v8::HandleScope scope;
+  XmlDocument *document = LibXmlObj::Unwrap<XmlDocument>(args.This());
+  assert(document);
+
+  v8::String::Utf8Value content(args[0]);
+  return scope.Close(document->create_comment(*content));
+}
+
+
+v8::Handle<v8::Value>
 XmlDocument::CreateDocumentFragment(const v8::Arguments& args) {
   v8::HandleScope scope;
   XmlDocument *document = LibXmlObj::Unwrap<XmlDocument>(args.This());
@@ -226,6 +237,12 @@ XmlDocument::create_text_node(const char *content) {
 }
 
 v8::Handle<v8::Value>
+XmlDocument::create_comment(const char *content) {
+  v8::HandleScope scope;
+  return scope.Close(LibXmlObj::GetMaybeBuild<XmlNode, xmlNode>(xmlNewDocComment(xml_obj, (const xmlChar *)content)));
+}
+
+v8::Handle<v8::Value>
 XmlDocument::create_document_fragment() {
   v8::HandleScope scope;
   return scope.Close(LibXmlObj::GetMaybeBuild<XmlElement, xmlNode>(xmlNewDocFragment(xml_obj)));
@@ -308,6 +325,10 @@ XmlDocument::Initialize(v8::Handle<v8::Object> target) {
   LXJS_SET_PROTO_METHOD(constructor_template,
                         "createTextNode",
                         XmlDocument::CreateTextNode);
+
+  LXJS_SET_PROTO_METHOD(constructor_template,
+                        "createComment",
+                        XmlDocument::CreateComment);
 
   LXJS_SET_PROTO_METHOD(constructor_template,
                         "importNode",

@@ -27,6 +27,7 @@ class XmlDocument : public LibXmlObj {
   static v8::Handle<v8::Value> Errors(const v8::Arguments& args);
   static v8::Handle<v8::Value> ToString(const v8::Arguments& args);
   static v8::Handle<v8::Value> CreateTextNode(const v8::Arguments& args);
+  static v8::Handle<v8::Value> CreateComment(const v8::Arguments& args);
   static v8::Handle<v8::Value> ImportNode(const v8::Arguments& args);
   static v8::Handle<v8::Value> CreateDocumentFragment(const v8::Arguments& args);
 
@@ -38,6 +39,7 @@ class XmlDocument : public LibXmlObj {
   v8::Handle<v8::Value> get_root();
   v8::Handle<v8::Value> create_document_fragment();
   v8::Handle<v8::Value> create_text_node(const char *content);
+  v8::Handle<v8::Value> create_comment(const char *content);
   void import_node(xmlNode* node);
   void set_root(xmlNode *node);
   bool has_root();
