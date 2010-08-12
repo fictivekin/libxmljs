@@ -32,6 +32,7 @@ class XmlDocFrag : public XmlNode {
   v8::Handle<v8::Value> get_child(double idx);
   v8::Handle<v8::Value> get_child_nodes();
   v8::Handle<v8::Value> get_path();
+  v8::Handle<v8::Value> clone(bool deep);
   void add_child(XmlElement* child);
   void set_content(const char* content);
   v8::Handle<v8::Value> get_content();

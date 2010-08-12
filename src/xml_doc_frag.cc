@@ -150,6 +150,14 @@ XmlDocFrag::Text(const v8::Arguments& args) {
 }
 
 v8::Handle<v8::Value>
+XmlDocFrag::clone(bool deep) {
+  v8::HandleScope scope;
+  
+  return scope.Close(LibXmlObj::GetMaybeBuild<XmlDocFrag, xmlNode>(xmlCopyNode(xml_obj, deep ? 1 : 0)));
+}
+
+
+v8::Handle<v8::Value>
 XmlDocFrag::Child(const v8::Arguments& args) {
   v8::HandleScope scope;
   XmlDocFrag *frag = LibXmlObj::Unwrap<XmlDocFrag>(args.This());

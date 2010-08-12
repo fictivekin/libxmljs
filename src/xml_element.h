@@ -42,6 +42,7 @@ class XmlElement : public XmlNode {
   v8::Handle<v8::Value> get_path();
   v8::Handle<v8::Value> get_attr(const char* name);
   v8::Handle<v8::Value> get_attrs();
+  v8::Handle<v8::Value> clone(bool deep);
   void set_attr(const char* name, const char* value);
   void remove_attr(const char* name);
   void add_child(XmlElement* child);

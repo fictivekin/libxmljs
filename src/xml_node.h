@@ -41,7 +41,7 @@ class XmlNode : public LibXmlObj {
   v8::Handle<v8::Value> get_type();
   v8::Handle<v8::Value> get_node_type();
   v8::Handle<v8::Value> to_string();
-  v8::Handle<v8::Value> clone(bool deep);
+  virtual v8::Handle<v8::Value> clone(bool deep);
   void remove();
 };
 

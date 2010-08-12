@@ -323,6 +323,13 @@ XmlElement::get_name() {
   return v8::String::New((const char*)xml_obj->name);
 }
 
+v8::Handle<v8::Value>
+XmlElement::clone(bool deep) {
+  v8::HandleScope scope;
+  
+  return scope.Close(LibXmlObj::GetMaybeBuild<XmlElement, xmlNode>(xmlCopyNode(xml_obj, deep ? 1 : 0)));
+}
+
 // TODO(sprsquish) make these work with namespaces
 void
 XmlElement::remove_attr(const char* name) {
