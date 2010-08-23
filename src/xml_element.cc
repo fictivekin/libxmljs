@@ -320,7 +320,8 @@ XmlElement::set_name(const char* name) {
 
 v8::Handle<v8::Value>
 XmlElement::get_name() {
-  return v8::String::New((const char*)xml_obj->name);
+    if(xml_obj->name) return v8::String::New((const char*)xml_obj->name);
+    else return v8::Undefined();
 }
 
 v8::Handle<v8::Value>
@@ -362,8 +363,7 @@ XmlElement::set_attr(const char* name,
       v8::String::New(name),
       v8::String::New(value)
   };
-  v8::Persistent<v8::Object>::New(
-    XmlAttribute::constructor_template->GetFunction()->NewInstance(3, argv));
+  XmlAttribute::constructor_template->GetFunction()->NewInstance(3, argv);
 }
 
 v8::Handle<v8::Value>
